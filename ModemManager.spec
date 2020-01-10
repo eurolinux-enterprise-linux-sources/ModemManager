@@ -5,7 +5,7 @@
 Summary: Mobile broadband modem management service
 Name: ModemManager
 Version: 0.4.0
-Release: 3%{snapshot}%{?dist}
+Release: 5%{snapshot}%{?dist}
 #
 # Source from git://anongit.freedesktop.org/ModemManager/ModemManager
 # tarball built with:
@@ -31,6 +31,9 @@ BuildRequires: automake autoconf intltool libtool
 BuildRequires: libxslt
 
 Patch0: nm-dbus-glib-disable-legacy-property-access.patch
+Patch1: rh883079-updated-rules.patch
+# Re-enable when glib-2.26 hits the buildroots
+#Patch2: glib-GTestFixtureFunc.patch
 
 %description
 The ModemManager service provides a consistent API to operate many different
@@ -40,6 +43,9 @@ modems, including mobile broadband (3G) devices.
 %setup -q -n %{name}-%{realversion}
 
 %patch0 -p1 -b .dbus-glib-no-legacy-props
+%patch1 -p1 -b .updated-rules
+# Re-enable when glib-2.26 hits the buildroots
+#%patch2 -p1 -b .glib-GTestFixtureFunc
 
 %build
 
@@ -95,6 +101,12 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor >&/dev/null || :
 %{_datadir}/icons/hicolor/22x22/apps/modem-manager.png
 
 %changelog
+* Tue Aug 27 2013 Dan Williams <dcbw@redhat.com> - 0.4.0-5.git20100628
+- Disable workaround for glib 2.26 for now (rh #999134)
+
+* Thu Aug  8 2013 Dan Williams <dcbw@redhat.com> - 0.4.0-4.git20100628
+- Update udev rules to handle more devices (rh #883079)
+
 * Thu Jul  1 2010 Dan Williams <dcbw@redhat.com> - 0.4.0-3.git20100628
 - rpm: bump version to fix RPM version conflicts
 
